@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f1ede3">
+  <meta name="description" content="Browse all available Lixr products.">
+  <link rel="icon" type="image/svg+xml" href="/assets/brand/lixr-mark.svg">
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="stylesheet" href="/styles/index.css">
+  <link rel="stylesheet" href="/styles/products.css">
+  <title>Products — Lixr</title>
+</head>
+<body id="top">
+  <header class="site-header product-page-header" id="siteHeader">
+    <a class="wordmark brand-wordmark" href="/" aria-label="Lixr home"><img src="/assets/brand/lixr-mark.svg" alt=""><span>LIXR</span></a>
+    <div class="product-page-title">Products</div>
+    <div class="header-actions"><button class="icon-button" id="themeToggle" type="button" aria-label="Switch theme" data-tooltip="Theme"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c0-.4 0-.8-.1-1.2A7 7 0 0 1 13.2 3H12Z"/></svg></button><a class="header-shop" href="/">Storefront</a></div>
+    <div class="scroll-progress" aria-hidden="true"><span id="scrollProgress"></span></div>
+  </header>
+  <main>
+    <section class="products-hero section-pad">
+      <p class="section-kicker">Lixr catalogue / current availability</p>
+      <h1>All products.</h1>
+      <p>Browse every available Lixr piece, with current prices and in-store availability.</p>
+    </section>
+    <section class="products-catalog section-pad">
+      <div class="catalog-toolbar">
+        <label class="search-field"><span>Search</span><input id="productSearch" type="search" placeholder="Name, category, collection…" autocomplete="off"></label>
+        <label><span>Collection</span><span class="select-field"><select id="collectionFilter"><option value="">All collections</option></select><i></i></span></label>
+        <label><span>Availability</span><span class="select-field"><select id="availabilityFilter"><option value="">All stock</option><option value="available">Available</option><option value="low">Low stock</option><option value="out">Sold out</option></select><i></i></span></label>
+      </div>
+      <div class="catalog-meta"><span id="catalogCount">Loading products…</span><button id="clearFilters" type="button">Clear filters</button></div>
+      <div class="product-grid" id="allProducts"><div class="product-skeleton"></div><div class="product-skeleton"></div><div class="product-skeleton"></div><div class="product-skeleton"></div></div>
+    </section>
+  </main>
+  <footer class="site-footer compact-footer"><div class="footer-topline"><span>LIXR / Products</span><a href="#top">Back to top ↑</a></div><div class="footer-grid"><div class="footer-intro"><img src="/assets/brand/lixr-mark.svg" alt=""><p>Modern essentials. Defined by you.</p></div><nav><strong>Explore</strong><a href="/">Home</a><a href="/#best-sellers">Best sellers</a><a href="/#visit">Contact</a></nav><div><strong>Store</strong><p>Saa, Inabanga, Bohol, Philippines</p></div><div class="footer-meta"><button id="footerTheme" type="button">Switch theme</button><span>© <span id="year"></span> Lixr</span></div></div></footer>
+  <dialog class="product-dialog" id="productDialog"><button class="dialog-close" data-close-dialog type="button" aria-label="Close product details">×</button><div class="product-dialog-media"><img id="dialogProductImage" alt=""></div><div class="product-dialog-copy"><p class="section-kicker" id="dialogProductCollection">Collection</p><h2 id="dialogProductName">Product</h2><p class="dialog-subtitle" id="dialogProductSubtitle"></p><p class="dialog-description" id="dialogProductDescription"></p><div class="dialog-product-meta"><strong id="dialogProductPrice"></strong><span id="dialogProductAvailability"></span></div><div class="dialog-sizes" id="dialogProductSizes" hidden></div><a class="button button-dark button-full" href="/#visit">Ask about this piece</a></div></dialog>
+  <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+  <script type="module" src="/scripts/pages/products/products.js"></script>
+</body>
+</html>

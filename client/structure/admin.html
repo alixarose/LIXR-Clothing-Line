@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f1ede3">
+  <meta name="description" content="Lixr store management.">
+  <title>Admin — Lixr</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/brand/lixr-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="stylesheet" href="/styles/admin.css">
+</head>
+<body class="admin-page">
+  <div class="admin-shell">
+    <aside class="admin-sidebar" id="adminSidebar">
+      <a class="admin-brand" href="/"><img src="/assets/brand/lixr-mark.svg" alt=""><span>LIXR</span><small>Store management</small></a>
+      <nav class="admin-nav-list" aria-label="Admin navigation">
+        <button class="admin-nav active" data-view="dashboard" type="button"><span class="nav-icon">⌂</span><span>Dashboard</span></button>
+        <button class="admin-nav" data-view="inventory" type="button"><span class="nav-icon">◇</span><span>Inventory</span><i id="navLowStock">0</i></button>
+        <button class="admin-nav" data-view="sales" type="button"><span class="nav-icon">▤</span><span>Sales history</span></button>
+        <button class="admin-nav" data-view="contact" type="button"><span class="nav-icon">✉</span><span>Contact</span><i id="navMessages">0</i></button>
+        <button class="admin-nav" data-view="ratings" type="button"><span class="nav-icon">☆</span><span>Ratings</span></button>
+        <button class="admin-nav" data-view="staff" type="button"><span class="nav-icon">◎</span><span>Staff access</span></button>
+        <button class="admin-nav" data-view="database" type="button"><span class="nav-icon">▦</span><span>Database</span></button>
+        <button class="admin-nav" data-view="system" type="button"><span class="nav-icon">⌘</span><span>System</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <span class="sidebar-label">Store</span>
+        <a class="sidebar-operation" href="/pos"><span class="sidebar-operation-icon">▦</span><span><b>Open cashier</b><small>Sales counter</small></span><strong>↗</strong></a>
+        <a class="sidebar-secondary" href="/">Storefront <span>↗</span></a>
+        <button class="sidebar-secondary" id="adminLogout" type="button">Sign out</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header">
+        <div class="admin-header-left"><button class="mobile-admin-menu" id="adminMenuButton" type="button" aria-label="Open navigation">☰</button><div><span class="admin-breadcrumb" id="adminBreadcrumb">Admin / Dashboard</span><small id="adminHeaderHint">Today’s store activity at a glance</small></div></div>
+        <div class="admin-user"><div><span id="adminRole">Checking access…</span><b id="adminUser">—</b></div><button class="icon-button" id="themeButton" type="button" aria-label="Switch theme" title="Switch theme">◐</button></div>
+      </header>
+
+      <section class="admin-view active" data-view-panel="dashboard">
+        <div class="admin-title"><div><p class="eyebrow">Store performance</p><h1>Dashboard</h1><p>See visitors, sales, earnings, stock and customer activity in one place.</p></div><span class="system-chip" id="dashboardDbState">Connecting…</span></div>
+        <div class="kpi-grid dashboard-kpis">
+          <article><span>Visitors today</span><strong id="kpiVisitors">—</strong><small id="kpiVisitorsTotal">— total visitors</small></article>
+          <article><span>Completed sales</span><strong id="kpiSales">—</strong><small id="kpiSalesToday">— today</small></article>
+          <article><span>Sales income</span><strong class="money-kpi" id="kpiRevenue">—</strong><small>completed sales</small></article>
+          <article><span>Profit</span><strong class="money-kpi" id="kpiProfit">—</strong><small>after item cost</small></article>
+          <article><span>Margin</span><strong id="kpiMargin">—</strong><small>profit as a share of revenue</small></article>
+          <article class="warning-card"><span>Low stock</span><strong id="kpiLow">—</strong><small><span id="kpiOut">—</span> sold out</small></article>
+        </div>
+
+        <div class="chart-grid">
+          <article class="chart-card chart-wide"><div class="panel-head"><div><p class="eyebrow">Store visits</p><h2>Visitor activity</h2></div><span>Last 14 days</span></div><canvas id="visitorChart" height="190" aria-label="Visitor activity chart"></canvas></article>
+          <article class="chart-card"><div class="panel-head"><div><p class="eyebrow">Inventory mix</p><h2>Stock by category</h2></div></div><canvas id="stockPie" height="220" aria-label="Stock by category chart"></canvas><div class="chart-legend" id="stockLegend"></div></article>
+          <article class="chart-card chart-wide"><div class="panel-head"><div><p class="eyebrow">Sales</p><h2>Daily income</h2></div><span>Last 14 days</span></div><canvas id="salesBar" height="190" aria-label="Daily sales chart"></canvas></article>
+          <article class="chart-card chart-wide"><div class="panel-head"><div><p class="eyebrow">Earnings</p><h2>Profit movement</h2></div><span id="dashboardRating">— rating</span></div><canvas id="profitWave" height="190" aria-label="Profit chart"></canvas></article>
+        </div>
+
+        <div class="dashboard-bottom-grid">
+          <article class="admin-panel compact-panel"><p class="eyebrow">Inventory value</p><h2>Cost on hand</h2><strong class="big-money" id="kpiInventoryValue">—</strong><p>Current cost value of the pieces still in stock.</p></article>
+          <article class="admin-panel compact-panel"><p class="eyebrow">Customer activity</p><div class="mini-stat"><span>Inbox waiting</span><b id="kpiMessages">—</b></div><div class="mini-stat"><span>Visible reviews</span><b id="kpiRatings">—</b></div><div class="mini-stat"><span>Active staff</span><b id="kpiStaff">—</b></div></article>
+          <article class="admin-panel compact-panel"><p class="eyebrow">Account services</p><div class="mini-stat"><span>Google sign-in</span><b id="integrationOAuth">—</b></div><div class="mini-stat"><span>Email updates</span><b id="integrationSMTP">—</b></div></article>
+        </div>
+        <div class="dashboard-table-grid">
+          <article class="dashboard-table-card"><div class="panel-head"><div><p class="eyebrow">Latest activity</p><h2>Recent sales</h2></div><button class="table-link" type="button" data-open-view="sales">View history</button></div><div class="mini-table-wrap"><table class="mini-table"><thead><tr><th>Receipt</th><th>Customer</th><th>Total</th><th>Status</th></tr></thead><tbody id="dashboardSalesRows"></tbody></table></div></article>
+          <article class="dashboard-table-card"><div class="panel-head"><div><p class="eyebrow">Stock attention</p><h2>Low & sold out</h2></div><button class="table-link" type="button" data-open-view="inventory">Open inventory</button></div><div class="mini-table-wrap"><table class="mini-table"><thead><tr><th>Product</th><th>SKU</th><th>Remaining</th></tr></thead><tbody id="dashboardStockRows"></tbody></table></div></article>
+        </div>
+      </section>
+
+      <section class="admin-view" data-view-panel="inventory">
+        <div class="admin-title"><div><p class="eyebrow">Inventory</p><h1>Products & stock</h1><p>Manage products, prices, images and stock. Use one quantity or size-by-size quantities depending on the product.</p></div><button class="button button-dark" type="button" id="addProductButton">+ Add product</button></div>
+        <div class="inventory-summary"><div><span>Total stock</span><strong>Quantity or size total</strong></div><div><span>Product photos</span><strong>Link or upload</strong></div><div><span>Saved photos</span><strong>Kept light and store-ready</strong></div></div>
+        <div class="inventory-toolbar"><label><span class="sr-only">Search inventory</span><input id="adminProductSearch" type="search" placeholder="Search product, SKU, category, color or size…"></label><span id="inventoryMeta">Loading inventory…</span></div>
+        <div class="inventory-table-wrap"><table class="inventory-table"><thead><tr><th>Product</th><th>Category</th><th>Stock</th><th>Status</th><th>Cost</th><th>Retail</th><th>Sale</th><th>Margin</th><th>Featured</th><th>Actions</th></tr></thead><tbody id="inventoryRows"></tbody></table></div>
+      </section>
+
+      <section class="admin-view" data-view-panel="sales">
+        <div class="admin-title"><div><p class="eyebrow">Sales records</p><h1>Sales history</h1><p>Every completed sale keeps its receipt number, payment details, item list and totals for later review.</p></div></div>
+        <div class="table-card"><div class="table-card-head"><span id="salesMeta">Loading sales…</span></div><div class="inventory-table-wrap"><table class="inventory-table"><thead><tr><th>Receipt</th><th>Date</th><th>Customer</th><th>Cashier</th><th>Payment</th><th>Total</th><th>Profit</th><th>Status</th><th></th></tr></thead><tbody id="salesRows"></tbody></table></div><div class="pager" id="salesPager"></div></div>
+      </section>
+
+      <section class="admin-view" data-view-panel="contact">
+        <div class="admin-title"><div><p class="eyebrow">Customer inbox</p><h1>Contact</h1><p>Review contact forms and continue store chats from one inbox.</p></div></div>
+        <div class="inbox-tabs" role="tablist" aria-label="Customer inbox">
+          <button class="active" id="contactFormsTab" type="button" data-inbox-tab="forms" role="tab" aria-selected="true">Contact forms <span id="contactFormCount">0</span></button>
+          <button id="contactChatTab" type="button" data-inbox-tab="chat" role="tab" aria-selected="false">Store chat <span id="contactChatCount">0</span></button>
+        </div>
+        <div class="inbox-panel active" id="contactFormsPanel" data-inbox-panel="forms">
+          <div class="record-list" id="contactList"></div>
+        </div>
+        <div class="inbox-panel" id="contactChatPanel" data-inbox-panel="chat" hidden>
+          <div class="admin-chat-layout">
+            <aside class="admin-chat-threads" id="adminChatThreads"><div class="empty-admin">Loading conversations…</div></aside>
+            <section class="admin-chat-room">
+              <header class="admin-chat-room-head"><div><strong id="adminChatName">Select a conversation</strong><span id="adminChatEmail">Choose a customer chat from the left.</span></div><span id="adminChatState"></span></header>
+              <div class="admin-chat-messages" id="adminChatMessages"><div class="empty-admin">No conversation selected.</div></div>
+              <form class="admin-chat-composer" id="adminChatForm">
+                <textarea id="adminChatInput" rows="1" maxlength="1200" placeholder="Write a reply…" disabled></textarea>
+                <button class="button button-dark" type="submit" disabled>Send</button>
+              </form>
+              <small class="admin-chat-hint">Enter sends · Shift+Enter starts a new line.</small>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="admin-view" data-view-panel="ratings">
+        <div class="admin-title"><div><p class="eyebrow">Customer reviews</p><h1>Ratings</h1><p>Reviews come from signed-in customers. Hide or restore a review without deleting its record.</p></div></div>
+        <div class="record-grid" id="ratingsGrid"></div>
+      </section>
+
+      <section class="admin-view" data-view-panel="staff">
+        <div class="admin-title"><div><p class="eyebrow">Staff access</p><h1>Accounts</h1><p>Manage cashier and admin access. The developer account remains protected from admin changes.</p></div><button class="button button-dark" id="addStaffButton" type="button">+ Add account</button></div>
+        <div class="access-rules"><article><b>Cashier</b><p>Uses the sales counter and customer checkout.</p></article><article><b>Admin</b><p>Manages products, customers, sales and staff.</p></article><article><b>Developer</b><p>Protected account with database maintenance access.</p></article></div>
+        <div class="staff-grid" id="staffGrid"></div>
+      </section>
+
+      <section class="admin-view" data-view-panel="database">
+        <div class="admin-title"><div><p class="eyebrow">Store records</p><h1>Database</h1><p>Browse every stored table. Admin accounts have a read-only view; direct changes are reserved for the developer account.</p></div><span class="system-chip" id="databaseAccess">Read only</span></div>
+        <div class="database-layout"><aside class="database-tables" id="databaseTables"></aside><section class="database-content"><div class="database-toolbar"><div><strong id="databaseTableTitle">Table</strong><span id="databaseTableMeta"></span></div></div><div class="database-grid-wrap"><table class="database-grid"><thead id="databaseHead"></thead><tbody id="databaseRows"></tbody></table></div><div class="pager" id="databasePager"></div><div class="developer-db" id="developerDatabase" hidden><div class="developer-db-head"><div><p class="eyebrow">Developer access</p><h2>Direct data change</h2></div><span>One statement at a time</span></div><textarea id="databaseSQL" rows="5" placeholder="SELECT * FROM products LIMIT 20"></textarea><div class="developer-db-actions"><button class="button button-dark" id="runDatabaseSQL" type="button">Run statement</button><button class="button danger-button" id="resetDatabaseButton" type="button">Reset store data</button></div><pre id="databaseResult">No statement run yet.</pre></div></section></div>
+      </section>
+
+      <section class="admin-view" data-view-panel="system">
+        <div class="admin-title"><div><p class="eyebrow">System</p><h1>Server & device</h1><p>See the computer and connection that are currently running Lixr.</p></div></div>
+        <div class="system-grid" id="systemGrid"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="drop-screen" id="dropScreen" hidden><div><strong>Drop product image</strong><span>JPEG, PNG, GIF or another image under 16 MB</span></div></div>
+
+  <dialog class="admin-dialog" id="productDialog">
+    <form method="dialog" id="productForm">
+      <button class="dialog-close" type="button" data-close-dialog="productDialog" aria-label="Close">×</button>
+      <div class="dialog-head"><div><p class="eyebrow">Product</p><h2 id="productDialogTitle">Add product</h2><p>Add a product photo from a link or your device. Lixr keeps a clean, lightweight copy with the product.</p></div><div class="image-preview" id="productImagePreview"><span>Image preview</span></div></div>
+      <input type="hidden" id="productId">
+      <div class="product-form-grid">
+        <label><span>Name</span><input id="productName" required maxlength="160"></label><label><span>SKU</span><input id="productSku" required maxlength="120"></label>
+        <label><span>Slug</span><input id="productSlug" maxlength="180" placeholder="auto-from-name"></label><label><span>Barcode</span><input id="productBarcode" maxlength="120"></label>
+        <label><span>Category</span><input id="productCategory" required maxlength="100"></label><label><span>Collection</span><input id="productCollection" maxlength="100"></label>
+        <label><span>Color</span><input id="productColor" maxlength="80"></label><label><span>Low-stock threshold</span><input id="productThreshold" type="number" min="0" step="1" value="10" required></label>
+        <label><span>Cost price</span><input id="productCost" type="number" min="0" step="0.01" required></label><label><span>Retail price</span><input id="productRetail" type="number" min="0" step="0.01" required></label>
+        <label><span>Sale price</span><input id="productSale" type="number" min="0" step="0.01" required></label><label><span>Badge</span><input id="productBadge" maxlength="40" placeholder="NEW / LIMITED"></label>
+        <label class="span-2"><span>Subtitle</span><input id="productSubtitle" maxlength="200"></label>
+        <label class="span-2"><span>Image URL</span><input id="productImageUrl" type="url" placeholder="https://..."></label>
+        <label class="span-2 upload-field" id="productUploadZone"><span>Upload image</span><input id="productImageFile" type="file" accept="image/*"><strong>Choose a file or drop an image anywhere on this page</strong><small id="productFileName">No file selected</small></label>
+        <label class="span-2"><span>Description</span><textarea id="productDescription" maxlength="1500"></textarea></label>
+        <label class="check-row"><input id="productFeatured" type="checkbox"><span>Best seller</span></label><label class="check-row"><input id="productActive" type="checkbox" checked><span>Active</span></label>
+      </div>
+      <p class="dialog-status" id="productStatus" aria-live="polite"></p><div class="dialog-actions"><button class="button button-reset" type="button" data-close-dialog="productDialog">Cancel</button><button class="button button-dark" type="submit">Save product</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="admin-dialog stock-dialog" id="stockDialog">
+    <form method="dialog" id="stockForm">
+      <button class="dialog-close" type="button" data-close-dialog="stockDialog" aria-label="Close">×</button>
+      <p class="eyebrow">Inventory quantity</p>
+      <h2 id="stockDialogTitle">Stock</h2>
+      <p class="dialog-copy">Use one total quantity for products without sizing, or track quantities by size when a product has size options.</p>
+      <input type="hidden" id="stockProductId">
+      <div class="stock-mode-switch" role="group" aria-label="Stock type">
+        <button class="active" type="button" data-stock-mode="single">Quantity only</button>
+        <button type="button" data-stock-mode="sizes">By size</button>
+      </div>
+      <div class="stock-single-panel" id="stockSinglePanel">
+        <label><span>Total quantity</span><input id="stockSingleQty" type="number" min="0" step="1" value="0"></label>
+      </div>
+      <div class="stock-sized-panel" id="stockSizedPanel" hidden>
+        <div class="stock-size-list" id="stockSizeList"></div>
+        <button class="add-size-button" id="addSizeButton" type="button">+ Add size</button>
+      </div>
+      <p class="stock-total">Total stock <strong id="stockTotal">0</strong></p>
+      <p class="dialog-status" id="stockStatus"></p>
+      <div class="dialog-actions"><button class="button button-reset" type="button" data-close-dialog="stockDialog">Cancel</button><button class="button button-dark" type="submit">Save stock</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="admin-dialog confirm-dialog" id="deleteDialog"><form method="dialog" id="deleteForm"><button class="dialog-close" type="button" data-close-dialog="deleteDialog" aria-label="Close">×</button><p class="eyebrow">Delete product</p><h2>Remove this product?</h2><p id="deleteProductCopy">This removes the product and its saved size quantities.</p><input type="hidden" id="deleteProductId"><div class="dialog-actions"><button class="button button-reset" type="button" data-close-dialog="deleteDialog">Cancel</button><button class="button danger-button" type="submit">Delete product</button></div></form></dialog>
+
+  <dialog class="admin-dialog staff-dialog" id="staffDialog"><form method="dialog" id="staffForm"><button class="dialog-close" type="button" data-close-dialog="staffDialog" aria-label="Close">×</button><p class="eyebrow">Staff account</p><h2 id="staffDialogTitle">Add account</h2><input type="hidden" id="staffId"><div class="product-form-grid staff-fields"><label><span>Username</span><input id="staffUsername" required maxlength="80"></label><label><span>Email (optional)</span><input id="staffEmail" type="email" maxlength="254"></label><label class="span-2"><span>Display name</span><input id="staffDisplayName" required maxlength="160"></label><label><span>Access</span><select id="staffRole"><option value="cashier">Cashier</option><option value="admin">Admin</option><option value="developer">Developer</option></select></label><label><span id="staffPasswordLabel">Password</span><input id="staffPassword" type="password" minlength="8" maxlength="256"></label><label class="check-row"><input id="staffActive" type="checkbox" checked><span>Active</span></label></div><p class="dialog-status" id="staffStatus"></p><div class="dialog-actions"><button class="button button-reset" type="button" data-close-dialog="staffDialog">Cancel</button><button class="button button-dark" type="submit">Save account</button></div></form></dialog>
+
+  <dialog class="admin-dialog receipt-dialog" id="receiptDialog"><button class="dialog-close" type="button" data-close-dialog="receiptDialog" aria-label="Close">×</button><div id="receiptContent"></div></dialog>
+  <dialog class="admin-dialog confirm-dialog" id="resetDialog"><form method="dialog" id="resetForm"><button class="dialog-close" type="button" data-close-dialog="resetDialog" aria-label="Close">×</button><p class="eyebrow">Developer confirmation</p><h2>Reset store data?</h2><p>Products return to the original catalogue and customer, sales, visit and subscription records are cleared. Staff accounts remain.</p><label><span>Type RESET LIXR</span><input id="resetConfirm" autocomplete="off"></label><p class="dialog-status" id="resetStatus"></p><div class="dialog-actions"><button class="button button-reset" type="button" data-close-dialog="resetDialog">Cancel</button><button class="button danger-button" type="submit">Reset store data</button></div></form></dialog>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+  <div class="tooltip-layer" id="tooltipLayer" role="tooltip" hidden></div>
+  <script type="module" src="/scripts/pages/admin/admin.js"></script>
+</body>
+</html>
